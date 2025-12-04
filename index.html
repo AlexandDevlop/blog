@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizontes del Conocimiento - Blog Académico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="https://cdni.iconscout.com/illustration/premium/thumb/planeta-saludable-8676224-7000682.png" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.7;
+            color: #2c3e50;
+            background: #0a0e27;
+            overflow-x: hidden;
+        }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            background: #1a1a2e;
+            color: white;
+            padding: 5rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInDown 1s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        nav {
+            background: #16213e;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav li {
+            margin: 0;
+            position: relative;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 400;
+            display: block;
+            padding: 1.3rem 2.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: #4a90e2;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        nav a:hover::before {
+            width: 80%;
+        }
+
+        nav a:hover {
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        main {
+            padding: 3rem 2.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .section {
+            display: none;
+            animation: fadeInSection 0.6s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeInSection {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post {
+            background: white;
+            padding: 0 0 3rem 0;
+            margin-bottom: 4rem;
+            border-bottom: 1px solid #e0e0e0;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .post:hover {
+            transform: translateX(5px);
+        }
+
+        .post::before {
+            content: '';
+            position: absolute;
+            left: -2.5rem;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: #4a90e2;
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 0.6s ease;
+        }
+
+        .post:hover::before {
+            transform: scaleY(1);
+        }
+
+        .post:last-child {
+            border-bottom: none;
+        }
+
+        .post h2 {
+            color: #1a1a2e;
+            margin-bottom: 0.8rem;
+            font-size: 2.2rem;
+            font-weight: 600;
+            line-height: 1.3;
+            position: relative;
+            display: inline-block;
+        }
+
+        .post h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: #4a90e2;
+        }
+
+        .post-meta {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        .post p {
+            margin-bottom: 1.3rem;
+            text-align: justify;
+            font-size: 1.05rem;
+            font-weight: 400;
+        }
+
+        .post-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            margin: 2rem 0;
+            border: 1px solid #ddd;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .post-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 4px solid #4a90e2;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #4a90e2;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .info-box h3 {
+            color: #1a1a2e;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .info-box p {
+            margin-bottom: 0;
+        }
+
+        .contact-form {
+            max-width: 650px;
+            margin: 2rem auto 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: #1a1a2e;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+            transform: translateY(-2px);
+        }
+
+        textarea {
+            min-height: 180px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        button {
+            background: #1a1a2e;
+            color: white;
+            padding: 1.2rem 3rem;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        button:hover {
+            background: #16213e;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .team-section {
+            background: #f8f9fa;
+            padding: 3rem;
+            margin-top: 4rem;
+            border-top: 3px solid #4a90e2;
+            position: relative;
+        }
+
+        .team-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #4a90e2;
+            animation: slideRight 2s ease-in-out infinite;
+        }
+
+        @keyframes slideRight {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .team-section h3 {
+            color: #1a1a2e;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .team-members {
+            margin-top: 1.5rem;
+            line-height: 2.2;
+            text-align: center;
+        }
+
+        .team-members p {
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+            transition: all 0.3s ease;
+        }
+
+        .team-members p:hover {
+            color: #4a90e2;
+            transform: translateX(5px);
+        }
+
+        footer {
+            background: #1a1a2e;
+            color: white;
+            text-align: center;
+            padding: 3rem;
+            border-top: 3px solid #16213e;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .highlight {
+            font-weight: 600;
+            color: #4a90e2;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            animation: slideInDown 0.3s ease;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav a {
+                padding: 1rem;
+                border-bottom: 1px solid #2c3e50;
+            }
+
+            main {
+                padding: 2rem 1.5rem;
+            }
+
+            .post::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles-canvas"></canvas>
+    
+    <div class="container">
+        <header>
+            <h1>Horizontes del Conocimiento</h1>
+            <p class="subtitle">Un espacio para el análisis y la reflexión académica</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#" onclick="showSection('inicio')">Inicio</a></li>
+                <li><a href="#" onclick="showSection('posts')">Publicaciones</a></li>
+                <li><a href="#" onclick="showSection('contacto')">Contacto</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="inicio" class="section active">
+                <div class="post">
+                    <h2>Acerca de este blog</h2>
+                    <p class="post-meta">Actualizado en diciembre de 2025</p>
+                    
+                    <p>Bienvenidos a <span class="highlight">Horizontes del Conocimiento</span>, un proyecto académico concebido para compartir reflexiones, investigaciones y análisis sobre temas de relevancia educativa y social. Este espacio digital surge como una iniciativa estudiantil orientada a desarrollar competencias de comunicación escrita, pensamiento crítico y trabajo colaborativo.</p>
+
+                    <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200&h=400&fit=crop" alt="Estudiantes en biblioteca" class="post-image">
+
+                    <p>A través de estas páginas, nos proponemos explorar diversos temas desde una perspectiva informada y rigurosa, manteniendo siempre un lenguaje accesible que permita el diálogo con distintos tipos de lectores. Cada entrada ha sido cuidadosamente elaborada para presentar información precisa, debidamente contextualizada y fundamentada en fuentes confiables.</p>
+
+                    <div class="info-box">
+                        <h3>Propósito del proyecto</h3>
+                        <p>Este blog constituye un ejercicio académico de largo alcance que se irá enriqueciendo progresivamente durante el ciclo escolar. Con cada parcial incorporaremos nuevas entradas que reflejen nuestro avance en el proceso de aprendizaje, permitiendo documentar no solo los contenidos estudiados, sino también la evolución en nuestras capacidades de análisis y síntesis.</p>
+                    </div>
+
+                    <p>Los invitamos a explorar las distintas secciones de este sitio. En el apartado de publicaciones encontrarán artículos sobre temas diversos, mientras que la sección de contacto está disponible para quienes deseen compartir comentarios, sugerencias o establecer un intercambio académico. Valoramos especialmente la retroalimentación constructiva que nos permita mejorar continuamente.</p>
+                </div>
+            </section>
+
+            <section id="posts" class="section">
+                <div class="post">
+                    <h2>La transformación digital en la educación contemporánea</h2>
+                    <p class="post-meta">Publicado el 3 de diciembre de 2025</p>
+                    
+                    <p>La incorporación de tecnologías digitales al ámbito educativo representa uno de los cambios más significativos en la historia reciente de la pedagogía. Durante las últimas décadas, hemos sido testigos de cómo herramientas que inicialmente parecían complementarias se han convertido en elementos centrales del proceso de enseñanza-aprendizaje. Esta transformación no se limita únicamente a la adopción de nuevos dispositivos, sino que implica una reconceptualización profunda de las metodologías educativas.</p>
+
+                    <img src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=1200&h=400&fit=crop" alt="Estudiante utilizando tecnología" class="post-image">
+
+                    <p>Las plataformas educativas digitales han democratizado el acceso al conocimiento de maneras impensables hace apenas una generación. Estudiantes de regiones remotas pueden ahora acceder a cursos de universidades prestigiosas, consultar bibliotecas digitales con millones de volúmenes y participar en comunidades académicas globales. Sin embargo, esta aparente universalización del conocimiento enfrenta obstáculos importantes, particularmente en contextos donde persisten desigualdades económicas y tecnológicas.</p>
+
+                    <div class="info-box">
+                        <h3>Consideraciones sobre la brecha digital</h3>
+                        <p>Diversos estudios señalan que aproximadamente un tercio de la población mundial aún carece de acceso regular a internet. Esta situación genera una nueva forma de desigualdad educativa, donde el acceso a recursos digitales determina significativamente las oportunidades de aprendizaje. Por tanto, resulta fundamental considerar estrategias que permitan cerrar esta brecha mientras se impulsa la innovación tecnológica.</p>
+                    </div>
+
+                    <p>La experiencia reciente ha demostrado que la educación digital no puede concebirse como un simple traslado de métodos tradicionales a plataformas virtuales. Requiere, por el contrario, el desarrollo de nuevas estrategias pedagógicas que aprovechen efectivamente las posibilidades que ofrecen estas herramientas. Entre estas posibilidades destacan la personalización del ritmo de aprendizaje, el acceso inmediato a múltiples fuentes de información y la posibilidad de colaboración asincrónica entre estudiantes de diferentes contextos.</p>
+
+                    <p>No obstante, es importante mantener una perspectiva equilibrada respecto a estas tecnologías. La educación digital presenta desafíos específicos relacionados con la capacidad de concentración, la calidad de la interacción social y la necesidad de autodisciplina por parte de los estudiantes. Además, persiste el debate sobre el papel del docente en estos nuevos entornos, debate que lejos de resolverse tiende a complejizarse con cada avance tecnológico.</p>
+
+                    <p>En conclusión, la transformación digital de la educación constituye un proceso en curso cuyas implicaciones aún no comprendemos completamente. Lo que resulta evidente es que esta transformación continuará moldeando las experiencias educativas de las próximas generaciones, haciendo imprescindible un análisis crítico y constante de sus beneficios, limitaciones y consecuencias.</p>
+                </div>
+
+                <div class="post">
+                    <h2>Desarrollo sostenible: perspectivas para el siglo XXI</h2>
+                    <p class="post-meta">Publicado el 1 de diciembre de 2025</p>
+                    
+                    <p>El concepto de desarrollo sostenible, popularizado a partir del informe Brundtland de 1987, ha evolucionado significativamente durante las últimas décadas hasta convertirse en un marco de referencia fundamental para pensar el futuro de nuestras sociedades. En esencia, este concepto plantea la necesidad de armonizar el crecimiento económico con la preservación ambiental y la equidad social, reconociendo que estos tres aspectos son interdependientes e igualmente necesarios.</p>
+
+                    <img src="https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=1200&h=400&fit=crop" alt="Paisaje natural" class="post-image">
+
+                    <p>Los Objetivos de Desarrollo Sostenible adoptados por las Naciones Unidas en 2015 representan el consenso internacional más ambicioso hasta la fecha respecto a las metas que la humanidad debe alcanzar. Estos diecisiete objetivos abarcan desde la erradicación de la pobreza extrema hasta la acción climática, pasando por la educación de calidad, la igualdad de género y el consumo responsable. Lo notable de esta agenda es que reconoce explícitamente la interconexión entre distintos problemas globales.</p>
+
+                    <div class="info-box">
+                        <h3>Desafíos demográficos y ambientales</h3>
+                        <p>Las proyecciones demográficas indican que la población mundial alcanzará aproximadamente 9.7 mil millones de personas hacia mediados de siglo. Este crecimiento poblacional, concentrado principalmente en regiones en desarrollo, ejercerá una presión sin precedentes sobre los recursos naturales, los sistemas alimentarios y los servicios ecosistémicos. La pregunta fundamental es cómo satisfacer las necesidades de esta población creciente sin comprometer la viabilidad de los sistemas que sostienen la vida en el planeta.</p>
+                    </div>
+
+                    <p>El cambio climático representa probablemente el desafío más apremiante en materia de sostenibilidad. La evidencia científica acumulada durante décadas demuestra de manera concluyente que las actividades humanas están alterando el clima global con consecuencias potencialmente catastróficas. Fenómenos como el aumento de temperaturas promedio, la intensificación de eventos climáticos extremos y la alteración de patrones de precipitación ya están afectando ecosistemas y comunidades humanas en todo el mundo.</p>
+
+                    <p>Frente a estos desafíos, resulta tentador caer en el pesimismo o la inacción. Sin embargo, es importante reconocer que también existen razones para el optimismo fundamentado. La transición hacia energías renovables avanza más rápidamente de lo anticipado hace una década, las tecnologías para la agricultura sostenible mejoran continuamente y existe una creciente conciencia pública sobre la urgencia de estos temas. Además, movimientos sociales en todo el mundo están presionando efectivamente por cambios en políticas públicas y prácticas empresariales.</p>
+
+                    <p>A nivel individual, si bien los principales cambios sistémicos requieren acción colectiva y decisiones políticas, existen múltiples formas de contribuir a un futuro más sostenible. Estas incluyen desde elecciones cotidianas de consumo hasta la participación en iniciativas comunitarias y el activismo político. Más importante aún, educar a las nuevas generaciones sobre la importancia de la sostenibilidad constituye quizás la inversión más valiosa que podemos realizar para el futuro.</p>
+
+                    <p>En definitiva, el desarrollo sostenible no representa un destino final sino un proceso continuo de adaptación y mejora. Requiere repensar fundamentalmente cómo organizamos nuestras economías, cómo nos relacionamos con el mundo natural y cómo definimos conceptos tan básicos como el progreso y el bienestar. Es, sin duda, uno de los desafíos definitorios de nuestra época.</p>
+                </div>
+            </section>
+
+            <section id="contacto" class="section">
+                <div class="post">
+                    <h2>Contacto</h2>
+                    <p>Agradecemos su interés en nuestro proyecto. Si desea compartir comentarios, sugerencias o establecer comunicación con nuestro equipo, puede utilizar el siguiente formulario. Nos comprometemos a responder todas las consultas recibidas en un plazo razonable.</p>
+
+                    <h2 class="inexist"><span><h2 class="inexist" style="text-shadow: #4a90e2; color: #4a90e2;">Envia a:</h2></span> a25300043@ceti.mx</h2>
+                    <div class="info-box" style="margin-top: 3rem;">
+                        <h3>Información adicional</h3>
+                        <p>Correo electrónico: a25300043@ceti.mx</p>
+                        <p>Nos esforzamos por responder todos los mensajes dentro de un período de 48 horas hábiles. Su retroalimentación es muy valiosa para nosotros y contribuye al mejoramiento continuo de este espacio académico.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="team-section">
+                <h3>Equipo responsable</h3>
+                <div class="team-members">
+                    <p><strong>Integrantes:</strong></p>
+                    <p>Omar Alexander Vargas Valenzuela</p>
+                    <p style="margin-top: 1rem;"><strong>Grado y grupo:</strong>1A</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Español - Humanidades</p>
+            <p>Proyecto académico en desarrollo continuo</p>
+            <p>2025</p>
+        </footer>
+    </div>
+
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        // Inicializar EmailJS
+        (function(){
+            emailjs.init("TU_PUBLIC_KEY"); // Reemplaza con tu Public Key
+        })();
+
+        // Partículas animadas
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 100;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(74, 144, 226, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 120) {
+                        ctx.strokeStyle = `rgba(74, 144, 226, ${0.15 * (1 - distance / 120)})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Navegación
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Formulario de contacto con backend
+        const contactForm = document.getElementById('contact-form');
+        const formMessage = document.getElementById('form-message');
+        const submitBtn = document.getElementById('submit-btn');
+const btnText = document.getElementById('btn-text');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Mostrar loading
+            submitBtn.disabled = true;
+            btnText.innerHTML = '<div class="loading"></div>';
+            formMessage.innerHTML = '';
+
+            // Parámetros para la plantilla de EmailJS
+            const templateParams = {
+                nombre: document.getElementById('nombre').value,
+                email: document.getElementById('email').value,
+                asunto: document.getElementById('asunto').value,
+                mensaje: document.getElementById('mensaje').value
+            };
+
+            // Enviar email con EmailJS
+            emailjs.send('service_dgpehux', 'template_dfgxmcn', templateParams)
+                .then((response) => {
+                    console.log('Email enviado!', response.status, response.text);
+                    formMessage.innerHTML = `
+                        <div class="alert alert-success">
+                            Mensaje enviado correctamente. Responderemos pronto.
+                        </div>
+                    `;
+                    contactForm.reset();
+                    submitBtn.disabled = false;
+                    btnText.textContent = 'Enviar mensaje';
+                }, (error) => {
+                    console.error('Error:', error);
+                    formMessage.innerHTML = `
+                        <div class="alert alert-error">
+                            Hubo un error al enviar el mensaje. Por favor intenta más tarde.
+                        </div>
+                    `;
+                    submitBtn.disabled = false;
+                    btnText.textContent = 'Enviar mensaje';
+                });
+        });
+    </script>
+</body>
+</html>
